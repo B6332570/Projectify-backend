@@ -22,4 +22,11 @@ export enum ENUMTypeColumnEntity {
   TYPE_ID = 'int4',
   TYPE_DATE = 'int8',
   TYPE_TIMESTAMP_TZ = 'timestamptz',
+  TYPE_VARCHAR = 'varchar',
+  TYPE_UUID = 'uuid',
+  INT4 = 'int4',
+  BOOLEAN = 'boolean',
+  JSON = 'json',
+  FLOAT = 'float',
+  TEXT = 'text',
 }

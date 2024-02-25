@@ -1,62 +1,87 @@
-import { DB_TABLE_NAME } from '@Database/common/enum/database.enum';
-import { ExtendedEntity } from '@Database/common/extended-entity';
 import {
-  Entity,
   Column,
+  Entity,
   PrimaryGeneratedColumn,
-  ManyToOne,
+  OneToMany,
   BeforeInsert,
   BeforeUpdate,
+  ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { ExtendedEntity } from '../common/extended-entity';
+import {
+  DB_TABLE_NAME,
+  ENUMTypeColumnEntity,
+} from '../common/enum/database.enum';
+import { ENUM_ROLE } from 'src/shared/enum/user.enum';
+import { ProjectEntity } from './project.entity';
 import * as bcrypt from 'bcrypt';
-import { RoleEntity } from './role.entity';
-import { SERIALIZE_GROUP } from '@Database/common/enum/serialization-group.enum';
-import { Expose } from 'class-transformer';
+import { MediaObjectEntity } from './media-object.entity';
 
 @Entity(DB_TABLE_NAME.USER)
 export class UserEntity extends ExtendedEntity {
-  @Column({ name: 'is_active', default: true })
-  @Expose({
-    groups: [SERIALIZE_GROUP.GROUP_USER],
-  })
-  isActive: boolean;
-
   @PrimaryGeneratedColumn()
-  @Expose({
-    groups: [SERIALIZE_GROUP.GROUP_USER],
-  })
   id: number;
 
-  @Column({ name: 'first_name', length: 255 })
-  @Expose({
-    groups: [SERIALIZE_GROUP.GROUP_USER],
-  })
-  firstName: string;
-
-  @Column({ name: 'last_name', length: 255 })
-  @Expose({
-    groups: [SERIALIZE_GROUP.GROUP_USER],
-  })
-  lastName: string;
-
-  @Column({ length: 15, nullable: true })
-  @Expose({
-    groups: [SERIALIZE_GROUP.GROUP_USER],
-  })
-  phone: string;
-
-  @Column({ length: 50 })
-  @Expose({
-    groups: [SERIALIZE_GROUP.GROUP_USER],
+  @Column({
+    type: ENUMTypeColumnEntity.TYPE_VARCHAR,
+    length: 255,
+    nullable: false,
+    name: 'username',
   })
   username: string;
 
-  @Column({ select: false })
-  @Expose({
-    groups: [],
+  @Column({
+    type: ENUMTypeColumnEntity.TYPE_VARCHAR,
+    length: 255,
+    nullable: false,
+    name: 'first_name',
+  })
+  firstName: string;
+
+  @Column({
+    type: ENUMTypeColumnEntity.TYPE_VARCHAR,
+    length: 255,
+    nullable: false,
+    name: 'last_name',
+  })
+  lastName: string;
+
+  @Column({
+    type: ENUMTypeColumnEntity.TYPE_VARCHAR,
+    length: 255,
+    nullable: false,
+    name: 'email',
+    unique: true,
+  })
+  email: string;
+
+  @Column({
+    type: ENUMTypeColumnEntity.TYPE_VARCHAR,
+    length: 255,
+    nullable: false,
+    name: 'password',
   })
   password: string;
+
+  @Column({
+    type: ENUMTypeColumnEntity.TYPE_VARCHAR,
+    length: 255,
+    nullable: false,
+    name: 'role',
+  })
+  role: ENUM_ROLE;
+
+  // One-to-Many relationship with ProjectEntity
+  @OneToMany(() => ProjectEntity, (project) => project.user)
+  projects: ProjectEntity[];
+
+  @ManyToOne(() => MediaObjectEntity, { nullable: true })
+  @JoinColumn({ name: 'user_image_id' })
+  userImage: MediaObjectEntity;
+
+  @Column({ name: 'user_image_id', nullable: true })
+  userImageId: number;
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -67,11 +92,4 @@ export class UserEntity extends ExtendedEntity {
       this.password = encryptPassword;
     }
   }
-
-  @ManyToOne(() => RoleEntity, { nullable: true })
-  @Expose({
-    groups: [SERIALIZE_GROUP.GROUP_USER],
-  })
-  @JoinColumn({ name: 'role_id' })
-  role: RoleEntity;
 }

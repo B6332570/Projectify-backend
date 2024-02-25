@@ -13,23 +13,24 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<UserEntity> {
+  async validateUser(
+    email: string,
+    password: string,
+    role: string,
+  ): Promise<UserEntity> {
     const user = await this.dataSource
       .getRepository(UserEntity)
       .createQueryBuilder('user')
       .select(['user', 'user.password'])
       .leftJoinAndSelect('user.role', 'role')
       .where('user.isDelete = :isDelete', { isDelete: false })
-      .andWhere('LOWER(user.username) = :username', {
-        username: username,
+      .andWhere('user.email = :email', {
+        email: email,
       })
-      .andWhere('user.isActive = :isActive', { isActive: true })
+      .andWhere('user.role = :role', {
+        role: role,
+      })
       .getOne();
-
-    console.log(
-      `🐛  ~ file: auth.service.ts ~ line 28 ~ AuthService ~ validateUser ~ user`,
-      user,
-    );
 
     if (!user) {
       throw new UnauthorizedException(ENUMErrorMessages.TRY_LOGIN_AGAIN);
@@ -42,6 +43,8 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    return await this.userService.create(registerDto);
+    const { email, password, role } = registerDto;
+    await this.userService.validateEmail(email);
+    return await this.userService.create({ email, password, role });
   }
 }

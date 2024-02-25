@@ -28,14 +28,11 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   async login(@Body() signInDto: SignInDto) {
-    const { username, password } = signInDto;
-    const user = await this.authService.validateUser(
-      username.toLowerCase(),
-      password,
-    );
+    const { username, password, role } = signInDto;
+    const user = await this.authService.validateUser(username, password, role);
     const payload: IJwtPayload = {
       id: user.id,
-      role: user?.role?.name,
+      role: user?.role,
     };
     const acToken = this.jwtService.sign({
       ...payload,
@@ -43,10 +40,12 @@ export class AuthController {
     });
 
     const _resp: any = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user?.role?.name,
-      username: user.username,
+      id: user.id,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      userName: user?.username,
+      role: user?.role,
+      email: user?.email,
       accessToken: acToken,
     };
     return _resp;

@@ -4,12 +4,14 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ENUMTypeColumnEntity } from './enum/database.enum';
 import { SERIALIZE_GROUP } from './enum/serialization-group.enum';
 
 export class ExtendedEntity extends BaseEntity {
+  @PrimaryGeneratedColumn()
   public id?: number;
 
   @Column({ type: 'bool', default: false, name: 'is_delete' })
