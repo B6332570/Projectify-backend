@@ -42,9 +42,18 @@ export class AuthService {
     }
   }
 
-  async register(registerDto: RegisterDto) {
-    const { email, password, role } = registerDto;
+  async register(body: RegisterDto) {
+    const { email, password, role, firstName, lastName, username, imageId } =
+      body;
     await this.userService.validateEmail(email);
-    return await this.userService.create({ email, password, role });
+    return await this.userService.create({
+      email,
+      password,
+      role,
+      firstName,
+      lastName,
+      imageId,
+      username,
+    });
   }
 }

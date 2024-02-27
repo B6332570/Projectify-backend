@@ -7,6 +7,7 @@ import {
   BeforeUpdate,
   ManyToOne,
   JoinColumn,
+  ManyToMany,
 } from 'typeorm';
 import { ExtendedEntity } from '../common/extended-entity';
 import {
@@ -17,6 +18,8 @@ import { ENUM_ROLE } from 'src/shared/enum/user.enum';
 import { ProjectEntity } from './project.entity';
 import * as bcrypt from 'bcrypt';
 import { MediaObjectEntity } from './media-object.entity';
+import { TaskItemEntity } from './task-item.entity';
+import { TaskUserEntity } from './task-user.entyty';
 
 @Entity(DB_TABLE_NAME.USER)
 export class UserEntity extends ExtendedEntity {
@@ -77,11 +80,14 @@ export class UserEntity extends ExtendedEntity {
   projects: ProjectEntity[];
 
   @ManyToOne(() => MediaObjectEntity, { nullable: true })
-  @JoinColumn({ name: 'user_image_id' })
-  userImage: MediaObjectEntity;
+  @JoinColumn({ name: 'image_id' })
+  image: MediaObjectEntity;
 
-  @Column({ name: 'user_image_id', nullable: true })
-  userImageId: number;
+  @Column({ name: 'image_id', nullable: true })
+  imageId: number;
+
+  @OneToMany(() => TaskUserEntity, (task) => task.user)
+  taskUsers: TaskUserEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()

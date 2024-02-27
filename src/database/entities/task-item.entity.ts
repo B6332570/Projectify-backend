@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
 import { ExtendedEntity } from '../common/extended-entity';
 import { ENUMTypeColumnEntity } from '../common/enum/database.enum';
@@ -12,6 +13,8 @@ import { ENUM_OS } from 'src/shared/enum/os.enum';
 import { ENUM_STATUS } from 'src/shared/enum/status.enum';
 import { TaskGroupEntity } from './task-group.entity';
 import { ENUM_PRIORITY } from 'src/shared/enum/priority.enum';
+import { UserEntity } from './user.entity';
+import { TaskUserEntity } from './task-user.entyty';
 
 @Entity()
 export class TaskItemEntity extends ExtendedEntity {
@@ -91,4 +94,8 @@ export class TaskItemEntity extends ExtendedEntity {
   taskGroup: TaskGroupEntity;
   @Column({ name: 'task_group_id' })
   taskGroupId: number;
+
+  @OneToMany(() => TaskUserEntity, (user) => user.task)
+  @JoinColumn({ name: 'user_id' })
+  users: TaskUserEntity[];
 }

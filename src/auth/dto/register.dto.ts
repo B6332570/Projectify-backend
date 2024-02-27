@@ -16,4 +16,16 @@ export class RegisterDto {
     required: true,
   })
   role: ENUM_ROLE;
+
+  @ApiProperty()
+  firstName: string;
+
+  @ApiProperty()
+  lastName: string;
+
+  @ApiProperty()
+  username: string;
+
+  @ApiProperty()
+  imageId: number;
 }
