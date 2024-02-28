@@ -13,6 +13,35 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
+  // async validateUser(
+  //   email: string,
+  //   password: string,
+  //   role: string,
+  // ): Promise<UserEntity> {
+  //   const user = await this.dataSource
+  //     .getRepository(UserEntity)
+  //     .createQueryBuilder('user')
+  //     .select(['user', 'user.password'])
+  //     .leftJoinAndSelect('user.role', 'role')
+  //     .where('user.isDelete = :isDelete', { isDelete: false })
+  //     .andWhere('user.email = :email', {
+  //       email: email,
+  //     })
+  //     .andWhere('user.role = :role', {
+  //       role: role,
+  //     })
+  //     .getOne();
+
+  //   if (!user) {
+  //     throw new UnauthorizedException(ENUMErrorMessages.TRY_LOGIN_AGAIN);
+  //   }
+  //   if (user && compareSync(password, user.password)) {
+  //     return user;
+  //   } else {
+  //     throw new UnauthorizedException(ENUMErrorMessages.TRY_LOGIN_AGAIN);
+  //   }
+  // }
+
   async validateUser(
     email: string,
     password: string,
@@ -22,14 +51,9 @@ export class AuthService {
       .getRepository(UserEntity)
       .createQueryBuilder('user')
       .select(['user', 'user.password'])
-      .leftJoinAndSelect('user.role', 'role')
       .where('user.isDelete = :isDelete', { isDelete: false })
-      .andWhere('user.email = :email', {
-        email: email,
-      })
-      .andWhere('user.role = :role', {
-        role: role,
-      })
+      .andWhere('user.email = :email', { email })
+      .andWhere('user.role = :role', { role })
       .getOne();
 
     if (!user) {
@@ -42,9 +66,9 @@ export class AuthService {
     }
   }
 
-  async register(body: RegisterDto) {
+  async register(registerDto: RegisterDto) {
     const { email, password, role, firstName, lastName, username, imageId } =
-      body;
+      registerDto;
     await this.userService.validateEmail(email);
     return await this.userService.create({
       email,
