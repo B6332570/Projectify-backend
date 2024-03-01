@@ -12,7 +12,7 @@ export const UserInfo = createParamDecorator(
     const request = ctx.switchToHttp().getRequest();
 
     const userInfo: IUserInfoDecorator = {
-      uuid: request.user.uuid,
+      id: request.user.id,
       role: request.user?.role,
     };
 

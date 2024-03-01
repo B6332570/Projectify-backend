@@ -10,6 +10,7 @@ import { TransformInterceptor } from './shared/http-interception';
 import { basicMiddleware } from './shared/middleware/basic.middleware';
 import * as morgan from 'morgan';
 import helmet from 'helmet';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -44,6 +45,7 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
+  app.useStaticAssets(join(__dirname, '..', 'bucket'));
   app.set('trust proxy', 1);
   app.use(json({ limit: '15mb' }));
   app.enableCors({

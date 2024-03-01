@@ -21,4 +21,11 @@ export class UserService extends CrudService<UserEntity> {
       throw new BadRequestException('Email is duplicate');
     }
   }
+
+  async updateUser(id: number, body: UpdateUserDto) {
+    const result = await this.dataSource
+      .getRepository(UserEntity)
+      .update(id, body);
+    return result;
+  }
 }

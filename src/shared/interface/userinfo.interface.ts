@@ -1,4 +1,4 @@
 export interface IUserInfoDecorator {
-  uuid: string;
+  id: number;
   role: string;
 }
