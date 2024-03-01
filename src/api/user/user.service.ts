@@ -28,4 +28,12 @@ export class UserService extends CrudService<UserEntity> {
       .update(id, body);
     return result;
   }
+
+  async getProfile(id: number) {
+    const profile = await this.dataSource.getRepository(UserEntity).findOne({
+      where: { id },
+      select: ['id', 'username', 'firstName', 'lastName', 'imageId'],
+    });
+    return profile;
+  }
 }
