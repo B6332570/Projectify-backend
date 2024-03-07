@@ -9,6 +9,7 @@ import {
   UseGuards,
   ClassSerializerInterceptor,
   UseInterceptors,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -32,5 +33,13 @@ export class ProjectController {
     @UserInfo() userInfo: IUserInfoDecorator,
   ) {
     return await this.projectService.createProject(createProjectDto, userInfo);
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProjectDto: UpdateProjectDto,
+  ) {
+    return await this.projectService.updateProject(id, updateProjectDto);
   }
 }

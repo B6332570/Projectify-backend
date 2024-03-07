@@ -22,4 +22,27 @@ export class ProjectService extends CrudService<ProjectEntity> {
     });
     return newProject;
   }
+
+  async updateProject(id: number, body: UpdateProjectDto) {
+    const project = await this.repository.findOneBy({ id: id });
+
+    if (!project) {
+      throw new Error('Project not found');
+    }
+
+    const isDataDifferent = Object.keys(body).some(
+      (key) => project[key] !== body[key],
+    );
+
+    if (!isDataDifferent) {
+      return project;
+    }
+
+    const updatedProject = await this.repository.save({
+      ...project,
+      ...body,
+    });
+
+    return updatedProject;
+  }
 }
