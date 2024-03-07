@@ -14,7 +14,7 @@ import { ENUM_STATUS } from 'src/shared/enum/status.enum';
 import { TaskGroupEntity } from './task-group.entity';
 import { ENUM_PRIORITY } from 'src/shared/enum/priority.enum';
 import { UserEntity } from './user.entity';
-import { TaskUserEntity } from './task-user.entyty';
+import { TaskUserEntity } from './task-user.entity';
 
 @Entity()
 export class TaskItemEntity extends ExtendedEntity {

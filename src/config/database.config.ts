@@ -3,7 +3,7 @@ import { MediaObjectEntity } from '@Database/entities/media-object.entity';
 import { ProjectEntity } from '@Database/entities/project.entity';
 import { TaskGroupEntity } from '@Database/entities/task-group.entity';
 import { TaskItemEntity } from '@Database/entities/task-item.entity';
-import { TaskUserEntity } from '@Database/entities/task-user.entyty';
+import { TaskUserEntity } from '@Database/entities/task-user.entity';
 import { UserEntity } from '@Database/entities/user.entity';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';

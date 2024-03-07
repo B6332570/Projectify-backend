@@ -19,7 +19,7 @@ import { ProjectEntity } from './project.entity';
 import * as bcrypt from 'bcrypt';
 import { MediaObjectEntity } from './media-object.entity';
 import { TaskItemEntity } from './task-item.entity';
-import { TaskUserEntity } from './task-user.entyty';
+import { TaskUserEntity } from './task-user.entity';
 
 @Entity(DB_TABLE_NAME.USER)
 export class UserEntity extends ExtendedEntity {
