@@ -66,7 +66,7 @@ export class TaskItemEntity extends ExtendedEntity {
 
   //start date
   @Column({
-    type: ENUMTypeColumnEntity.TYPE_DATE,
+    type: ENUMTypeColumnEntity.TYPE_TIMESTAMP_TZ,
     nullable: true,
     name: 'start_date',
   })
@@ -74,7 +74,7 @@ export class TaskItemEntity extends ExtendedEntity {
 
   //end date
   @Column({
-    type: ENUMTypeColumnEntity.TYPE_DATE,
+    type: ENUMTypeColumnEntity.TYPE_TIMESTAMP_TZ,
     nullable: true,
     name: 'end_date',
   })
