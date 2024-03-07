@@ -14,6 +14,15 @@ export class ProjectService extends CrudService<ProjectEntity> {
     this.repository = this.dataSource.getRepository(ProjectEntity);
   }
 
+  async findAllProject() {
+    return await this.repository
+      .createQueryBuilder('project')
+      .select('project')
+      .leftJoinAndSelect('project.taskGroups', 'taskGroup')
+      .leftJoinAndSelect('taskGroup.taskItems', 'taskItem')
+      .getMany();
+  }
+
   async createProject(body: CreateProjectDto, userInfo: IUserInfoDecorator) {
     const { projectsName } = body;
     const newProject = await this.repository.save({

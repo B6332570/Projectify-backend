@@ -42,4 +42,9 @@ export class ProjectController {
   ) {
     return await this.projectService.updateProject(id, updateProjectDto);
   }
+
+  @Get()
+  async findAll() {
+    return await this.projectService.findAllProject();
+  }
 }

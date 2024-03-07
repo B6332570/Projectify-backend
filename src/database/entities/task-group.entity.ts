@@ -28,7 +28,7 @@ export class TaskGroupEntity extends ExtendedEntity {
   @OneToMany(() => TaskItemEntity, (taskItem) => taskItem.taskGroup)
   taskItems: TaskItemEntity[];
 
-  @ManyToOne(() => ProjectEntity, (project) => project.tasks)
+  @ManyToOne(() => ProjectEntity, (project) => project.taskGroups)
   @JoinColumn({ name: 'project_id' })
   project: ProjectEntity;
   @Column({ name: 'project_id' })

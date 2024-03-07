@@ -30,6 +30,6 @@ export class ProjectEntity extends ExtendedEntity {
   @Column({ name: 'user_id' })
   userId: number;
 
-  @OneToMany(() => TaskGroupEntity, (task) => task.project)
-  tasks: TaskGroupEntity[];
+  @OneToMany(() => TaskGroupEntity, (taskGroup) => taskGroup.project)
+  taskGroups: TaskGroupEntity[];
 }
