@@ -95,7 +95,7 @@ export class TaskItemEntity extends ExtendedEntity {
   @Column({ name: 'task_group_id' })
   taskGroupId: number;
 
-  @OneToMany(() => TaskUserEntity, (user) => user.task)
+  @OneToMany(() => TaskUserEntity, (user) => user.taskItem)
   @JoinColumn({ name: 'user_id' })
   users: TaskUserEntity[];
 }

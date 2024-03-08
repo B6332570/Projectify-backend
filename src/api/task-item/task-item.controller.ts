@@ -9,6 +9,7 @@ import {
   ClassSerializerInterceptor,
   UseGuards,
   UseInterceptors,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TaskItemService } from './task-item.service';
 import { CreateTaskItemDto } from './dto/create-task-item.dto';
@@ -27,5 +28,13 @@ export class TaskItemController {
   @Post()
   async create(@Body() createTaskItemDto: CreateTaskItemDto) {
     return await this.taskItemService.createTaskItem(createTaskItemDto);
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTaskItemDto: UpdateTaskItemDto,
+  ) {
+    return await this.taskItemService.updateTaskItem(id, updateTaskItemDto);
   }
 }

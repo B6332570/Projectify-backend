@@ -12,8 +12,8 @@ export class TaskUserEntity extends ExtendedEntity {
   userId: number;
 
   @ManyToOne(() => TaskItemEntity, (task) => task.id)
-  @JoinColumn({ name: 'task_id' })
-  task: TaskItemEntity;
-  @Column({ name: 'task_id' })
-  taskId: number;
+  @JoinColumn({ name: 'task_item_id' })
+  taskItem: TaskItemEntity;
+  @Column({ name: 'task_item_id' })
+  taskItemId: number;
 }
