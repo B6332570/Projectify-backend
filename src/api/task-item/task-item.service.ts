@@ -121,4 +121,23 @@ export class TaskItemService extends CrudService<TaskItemEntity> {
       await queryRunner.release();
     }
   }
+
+  async findAllTaskItem() {
+    return await this.taskItemRepository
+      .createQueryBuilder('taskItem')
+      .select('taskItem')
+      .getMany();
+  }
+
+  async getTaskItemById(id: number) {
+    const taskItem = await this.taskItemRepository
+      .createQueryBuilder('taskItem')
+      .select('taskItem')
+      .where('taskItem.id = :id', { id })
+      .getOne();
+    if (!taskItem) {
+      throw new NotFoundException(`TaskItem with ID ${id} not found.`);
+    }
+    return taskItem;
+  }
 }

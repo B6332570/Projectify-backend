@@ -25,6 +25,16 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class TaskItemController {
   constructor(private readonly taskItemService: TaskItemService) {}
 
+  @Get()
+  async findAll() {
+    return await this.taskItemService.findAllTaskItem();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.taskItemService.getTaskItemById(id);
+  }
+
   @Post()
   async create(@Body() createTaskItemDto: CreateTaskItemDto) {
     return await this.taskItemService.createTaskItem(createTaskItemDto);
@@ -36,5 +46,10 @@ export class TaskItemController {
     @Body() updateTaskItemDto: UpdateTaskItemDto,
   ) {
     return await this.taskItemService.updateTaskItem(id, updateTaskItemDto);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.taskItemService.softDelete({ id });
   }
 }
