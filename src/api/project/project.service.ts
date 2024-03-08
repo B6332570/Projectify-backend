@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { CrudService } from '@Base/crud.service';
@@ -21,6 +21,20 @@ export class ProjectService extends CrudService<ProjectEntity> {
       .leftJoinAndSelect('project.taskGroups', 'taskGroup')
       .leftJoinAndSelect('taskGroup.taskItems', 'taskItem')
       .getMany();
+  }
+
+  async getProjectById(projectId: number) {
+    const project = await this.repository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.taskGroups', 'taskGroup')
+      .leftJoinAndSelect('taskGroup.taskItems', 'taskItem')
+      .where('project.id = :projectId', { projectId })
+      .getOne();
+
+    if (!project) {
+      throw new NotFoundException(`Project with ID ${projectId} not found.`);
+    }
+    return project;
   }
 
   async createProject(body: CreateProjectDto, userInfo: IUserInfoDecorator) {

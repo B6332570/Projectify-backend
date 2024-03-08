@@ -27,6 +27,16 @@ import { IUserInfoDecorator } from '@Shared/interface/userinfo.interface';
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
+  @Get()
+  async findAll() {
+    return await this.projectService.findAllProject();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.projectService.getProjectById(id);
+  }
+
   @Post()
   async create(
     @Body() createProjectDto: CreateProjectDto,
@@ -41,10 +51,5 @@ export class ProjectController {
     @Body() updateProjectDto: UpdateProjectDto,
   ) {
     return await this.projectService.updateProject(id, updateProjectDto);
-  }
-
-  @Get()
-  async findAll() {
-    return await this.projectService.findAllProject();
   }
 }
