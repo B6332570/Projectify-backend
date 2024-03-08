@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskGroupDto } from './dto/create-task-group.dto';
 import { UpdateTaskGroupDto } from './dto/update-task-group.dto';
 import { CrudService } from '@Base/crud.service';
@@ -21,7 +21,7 @@ export class TaskGroupService extends CrudService<TaskGroupEntity> {
     const { projectId, taskGroupName } = body;
     const project = await this.projectRepository.findOneBy({ id: projectId });
     if (!project) {
-      throw new Error('Project not found');
+      throw new NotFoundException('Project not found');
     }
 
     const taskGroup = this.repository.create({
@@ -30,5 +30,48 @@ export class TaskGroupService extends CrudService<TaskGroupEntity> {
     });
 
     return await this.repository.save(taskGroup);
+  }
+
+  async findAllTaskGroup() {
+    return await this.repository
+      .createQueryBuilder('taskGroup')
+      .select('taskGroup')
+      .leftJoinAndSelect('taskGroup.taskItems', 'taskItems')
+      .getMany();
+  }
+
+  async getTaskGroupById(id: number) {
+    const taskGroup = await this.repository
+      .createQueryBuilder('taskGroup')
+      .select('taskGroup')
+      .leftJoinAndSelect('taskGroup.taskItems', 'taskItems')
+      .where('taskGroup.id = :id', { id })
+      .getOne();
+    if (!taskGroup) {
+      throw new NotFoundException(`TaskGroup with ID ${id} not found.`);
+    }
+    return taskGroup;
+  }
+
+  async updateTaskGroup(id: number, body: UpdateTaskGroupDto) {
+    const taskGroup = await this.repository.findOneBy({ id: id });
+    if (!taskGroup) {
+      throw new NotFoundException('TaskGroup not found');
+    }
+
+    const isDataDifferent = Object.keys(body).some(
+      (key) => taskGroup[key] !== body[key],
+    );
+
+    if (!isDataDifferent) {
+      return taskGroup;
+    }
+
+    const updatedTaskGroup = await this.repository.save({
+      ...taskGroup,
+      ...body,
+    });
+
+    return updatedTaskGroup;
   }
 }

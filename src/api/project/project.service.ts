@@ -23,16 +23,16 @@ export class ProjectService extends CrudService<ProjectEntity> {
       .getMany();
   }
 
-  async getProjectById(projectId: number) {
+  async getProjectById(id: number) {
     const project = await this.repository
       .createQueryBuilder('project')
       .leftJoinAndSelect('project.taskGroups', 'taskGroup')
       .leftJoinAndSelect('taskGroup.taskItems', 'taskItem')
-      .where('project.id = :projectId', { projectId })
+      .where('project.id = :id', { id })
       .getOne();
 
     if (!project) {
-      throw new NotFoundException(`Project with ID ${projectId} not found.`);
+      throw new NotFoundException(`Project with ID ${id} not found.`);
     }
     return project;
   }
