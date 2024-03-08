@@ -52,4 +52,9 @@ export class ProjectController {
   ) {
     return await this.projectService.updateProject(id, updateProjectDto);
   }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.projectService.softDelete({ id });
+  }
 }
