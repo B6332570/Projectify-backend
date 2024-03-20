@@ -5,11 +5,16 @@ import { CrudService } from '@Base/crud.service';
 import { ProjectEntity } from '@Database/entities/project.entity';
 import { DataSource, Repository } from 'typeorm';
 import { IUserInfoDecorator } from '@Shared/interface/userinfo.interface';
+import { ExcelService } from '@Api/excel/excel.service';
+import { Response } from 'express';
 
 @Injectable()
 export class ProjectService extends CrudService<ProjectEntity> {
   protected readonly repository: Repository<ProjectEntity>;
-  constructor(private dataSource: DataSource) {
+  constructor(
+    private dataSource: DataSource,
+    private readonly excelService: ExcelService,
+  ) {
     super();
     this.repository = this.dataSource.getRepository(ProjectEntity);
   }
@@ -67,5 +72,45 @@ export class ProjectService extends CrudService<ProjectEntity> {
     });
 
     return updatedProject;
+  }
+
+  async exportProject(res: Response) {
+    const headers = [
+      'project name',
+      'task group',
+      'task group name',
+      'task item',
+      'title',
+      'task name',
+      'description',
+      'os',
+      'status',
+      'start date',
+      'end date',
+      'priority',
+    ];
+    const result = await this.findAllProject();
+    const data = result.map((item) => {
+      const taskGroup = item.taskGroups.map((cItem) => {
+        const taskItem = cItem.taskItems.map((c2Item) => {
+          const format = {
+            title: c2Item.title,
+            taskName: c2Item.taskName,
+            description: c2Item.description,
+            os: c2Item.os,
+            status: c2Item.status,
+            startDate: c2Item.startDate,
+            endDate: c2Item.endDate,
+            priority: c2Item.priority,
+          };
+          return format;
+        });
+        const format = { taskGroupName: cItem.taskGroupName, taskItem };
+        return format;
+      });
+      const format = { projectsName: item.projectsName, taskGroup };
+      return format;
+    });
+    await this.excelService.exportExcel(res, headers, data);
   }
 }

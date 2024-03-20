@@ -10,6 +10,7 @@ import {
   ClassSerializerInterceptor,
   UseInterceptors,
   ParseIntPipe,
+  Res,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -18,6 +19,7 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserInfo } from '@Shared/decorator/userinfo.decorator';
 import { IUserInfoDecorator } from '@Shared/interface/userinfo.interface';
+import { Response } from 'express';
 
 @Controller('project')
 @ApiTags('project')
@@ -26,6 +28,11 @@ import { IUserInfoDecorator } from '@Shared/interface/userinfo.interface';
 @UseInterceptors(ClassSerializerInterceptor)
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
+
+  @Get('export')
+  async export(@Res() res: Response) {
+    return await this.projectService.exportProject(res);
+  }
 
   @Get()
   async findAll() {

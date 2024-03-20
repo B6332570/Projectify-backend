@@ -1,4 +1,3 @@
-import { GalleryEntity } from '@Database/entities/gallery.entity';
 import { MediaObjectEntity } from '@Database/entities/media-object.entity';
 import { ProjectEntity } from '@Database/entities/project.entity';
 import { TaskGroupEntity } from '@Database/entities/task-group.entity';
@@ -19,7 +18,6 @@ export default () =>
     database: process.env.DB_DATABASE || 'yim',
     logging: process.env.DB_LOGGING === 'true',
     entities: [
-      GalleryEntity,
       MediaObjectEntity,
       ProjectEntity,
       TaskGroupEntity,
