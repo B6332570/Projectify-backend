@@ -77,9 +77,7 @@ export class ProjectService extends CrudService<ProjectEntity> {
   async exportProject(res: Response) {
     const headers = [
       'project name',
-      'task group',
       'task group name',
-      'task item',
       'title',
       'task name',
       'description',

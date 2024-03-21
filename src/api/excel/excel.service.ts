@@ -14,7 +14,7 @@ export class ExcelService {
     this.renderHeader(headers, ws, styleHeader);
 
     const styleData = this.styleData(wb);
-    this.renderData(ws, styleData, data);
+    this.renderData(ws, styleData, data, wb);
 
     // Create a reusable style
     var style = wb.createStyle({
@@ -28,20 +28,36 @@ export class ExcelService {
     wb.write('Excel.xlsx', res);
   }
   styleHeader(wb: any) {
-    var style = wb.createStyle({
+    return wb.createStyle({
       font: {
-        color: '#FF0800',
+        color: '#000000', // ตั้งค่าสีฟอนต์เป็นสีดำ
         size: 12,
       },
-      numberFormat: '$#,##0.00; ($#,##0.00); -',
+      border: {
+        left: {
+          style: 'thin',
+          color: 'black',
+        },
+        right: {
+          style: 'thin',
+          color: 'black',
+        },
+        top: {
+          style: 'thin',
+          color: 'black',
+        },
+        bottom: {
+          style: 'thin',
+          color: 'black',
+        },
+      },
     });
-    return style;
   }
 
   styleData(wb: any) {
     var style = wb.createStyle({
       font: {
-        color: '#FF0800',
+        color: '#000000',
         size: 12,
       },
       numberFormat: '$#,##0.00; ($#,##0.00); -',
@@ -49,16 +65,43 @@ export class ExcelService {
     return style;
   }
 
-  renderHeader(headers: string[], ws: any, style: any) {
+  borderStyle(wb: any, color = 'black') {
+    return wb.createStyle({
+      border: {
+        left: {
+          style: 'thin',
+          color: color,
+        },
+        right: {
+          style: 'thin',
+          color: color,
+        },
+        top: {
+          style: 'thin',
+          color: color,
+        },
+        bottom: {
+          style: 'thin',
+          color: color,
+        },
+      },
+    });
+  }
+
+  renderHeader(headers: string[], ws: any, styleHeader: any) {
     for (const [i, header] of headers.entries()) {
       ws.cell(1, i + 1)
         .string(header)
-        .style(style);
+        .style(styleHeader);
     }
   }
 
-  private renderData = (ws: any, dataStyle: any, result: any) => {
+  private renderData = (ws: any, dataStyle: any, result: any, wb: any) => {
     let row = 2;
+
+    // const projectBorderStyle = this.borderStyle(wb);
+    // const taskGroupBorderStyle = this.borderStyle(wb);
+    // const taskItemBorderStyle = this.borderStyle(wb);
     for (const data of result) {
       let isCount = true;
       let newRaw = row;
@@ -67,6 +110,7 @@ export class ExcelService {
           ws.cell(row, index + 1)
             .string(`${data[key] || ''}`)
             .style(dataStyle);
+          // .style(projectBorderStyle);
         } else if (Array.isArray(data[key]) && data[key].length > 0) {
           isCount = false;
           let childIndex = index + 1;
@@ -80,6 +124,7 @@ export class ExcelService {
                 ws.cell(childRow, cIndex + childIndex)
                   .string(`${itemChild || ''}`)
                   .style(dataStyle);
+                // .style(taskGroupBorderStyle);
               } else if (Array.isArray(itemChild) && itemChild.length > 0) {
                 isChildCount = false;
                 let child2Index = childIndex + 1;
@@ -93,6 +138,7 @@ export class ExcelService {
                       ws.cell(child2Row, c2Index + child2Index)
                         .string(`${itemChild2 || ''}`)
                         .style(dataStyle);
+                      // .style(taskItemBorderStyle);
                     } else if (
                       Array.isArray(itemChild2) &&
                       itemChild2.length > 0
