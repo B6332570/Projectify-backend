@@ -33,18 +33,22 @@ import { SERIALIZE_GROUP } from '@Database/common/enum/serialization-group.enum'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('')
-  async findAll(@Query() qs: PaginationQueryString) {
-    const [result, total] = await this.userService.findAndCount({
-      skip: qs.getOffset(),
-      take: qs.limit,
-    });
-    return paginateResponse(
-      plainToInstance(UserEntity, result),
-      total,
-      qs.limit,
-      qs.page,
-    );
+  // @Get('')
+  // async findAll(@Query() qs: PaginationQueryString) {
+  //   const [result, total] = await this.userService.findAndCount({
+  //     skip: qs.getOffset(),
+  //     take: qs.limit,
+  //   });
+  //   return paginateResponse(
+  //     plainToInstance(UserEntity, result),
+  //     total,
+  //     qs.limit,
+  //     qs.page,
+  //   );
+  // }
+  @Get()
+  async findAll() {
+    return await this.userService.findAllUser();
   }
 
   @Get('profile')

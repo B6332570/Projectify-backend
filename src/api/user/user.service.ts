@@ -22,6 +22,13 @@ export class UserService extends CrudService<UserEntity> {
     }
   }
 
+  async findAllUser() {
+    return await this.repository
+      .createQueryBuilder('User')
+      .select('User')
+      .getMany();
+  }
+
   async updateUser(id: number, body: UpdateUserDto) {
     const result = await this.dataSource
       .getRepository(UserEntity)
