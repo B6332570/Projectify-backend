@@ -53,7 +53,7 @@ async function bootstrap() {
     origin: (origin, callback) => {
       return callback(null, true);
     },
-    methods: 'GET,PUT,POST,DELETE',
+    methods: 'GET,PUT,PATCH,POST,DELETE',
   });
 
   await app.listen(config.get<number>('app.port'));

@@ -122,10 +122,30 @@ export class TaskItemService extends CrudService<TaskItemEntity> {
     }
   }
 
+  // async findAllTaskItem() {
+  //   return await this.taskItemRepository
+  //     .createQueryBuilder('taskItem')
+  //     .select('taskItem')
+  //     .getMany();
+  // }
+
   async findAllTaskItem() {
     return await this.taskItemRepository
       .createQueryBuilder('taskItem')
-      .select('taskItem')
+      .leftJoinAndSelect('taskItem.users', 'taskUser')
+      .select([
+        'taskItem.id',
+        'taskItem.title',
+        'taskItem.taskName',
+        'taskItem.description',
+        'taskItem.os',
+        'taskItem.status',
+        'taskItem.startDate',
+        'taskItem.endDate',
+        'taskItem.priority',
+        'taskItem.taskGroupId',
+        'taskUser.userId',
+      ])
       .getMany();
   }
 
