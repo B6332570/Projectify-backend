@@ -133,6 +133,7 @@ export class TaskItemService extends CrudService<TaskItemEntity> {
     return await this.taskItemRepository
       .createQueryBuilder('taskItem')
       .leftJoinAndSelect('taskItem.users', 'taskUser')
+      .leftJoinAndSelect('taskUser.user', 'user')
       .select([
         'taskItem.id',
         'taskItem.title',
@@ -145,6 +146,8 @@ export class TaskItemService extends CrudService<TaskItemEntity> {
         'taskItem.priority',
         'taskItem.taskGroupId',
         'taskUser.userId',
+        'user.username',
+        'user.firstName',
       ])
       .getMany();
   }
