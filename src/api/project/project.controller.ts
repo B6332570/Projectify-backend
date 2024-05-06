@@ -25,7 +25,7 @@ import { Response } from 'express';
 @ApiTags('project')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@UseInterceptors(ClassSerializerInterceptor)
+// @UseInterceptors(ClassSerializerInterceptor)
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 

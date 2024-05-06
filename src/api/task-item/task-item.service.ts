@@ -163,4 +163,17 @@ export class TaskItemService extends CrudService<TaskItemEntity> {
     }
     return taskItem;
   }
+
+  async removeTaskById(id: number) {
+    const taskItem = await this.taskItemRepository.findOne({ where: { id } });
+    const now = new Date();
+    if (!taskItem) {
+      throw new Error('Task not found');
+    }
+    taskItem.isDelete = true;
+    taskItem.updatedAt = now;
+    taskItem.deletedAt = now;
+    await this.taskItemRepository.save(taskItem);
+    return;
+  }
 }

@@ -50,6 +50,6 @@ export class TaskItemController {
 
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
-    return await this.taskItemService.softDelete({ id });
+    return await this.taskItemService.removeTaskById(id);
   }
 }
