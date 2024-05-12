@@ -45,7 +45,7 @@ export class AuthService {
   async validateUser(
     email: string,
     password: string,
-    role: string,
+    // role: string,
   ): Promise<UserEntity> {
     const user = await this.dataSource
       .getRepository(UserEntity)
@@ -53,7 +53,7 @@ export class AuthService {
       .select(['user', 'user.password'])
       .where('user.isDelete = :isDelete', { isDelete: false })
       .andWhere('user.email = :email', { email })
-      .andWhere('user.role = :role', { role })
+      // .andWhere('user.role = :role', { role })
       .getOne();
 
     if (!user) {

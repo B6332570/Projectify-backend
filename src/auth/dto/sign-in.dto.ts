@@ -11,7 +11,7 @@ export class SignInDto {
   @IsString()
   password: string;
 
-  @ApiProperty({ enum: ENUM_ROLE, required: true })
-  @IsString()
-  role: string;
+  // @ApiProperty({ enum: ENUM_ROLE, required: true })
+  // @IsString()
+  // role: string;
 }

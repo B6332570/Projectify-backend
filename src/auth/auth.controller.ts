@@ -28,8 +28,11 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   async login(@Body() signInDto: SignInDto) {
-    const { username, password, role } = signInDto;
-    const user = await this.authService.validateUser(username, password, role);
+    const { username, password /*, role*/ } = signInDto;
+    const user = await this.authService.validateUser(
+      username,
+      password /*role,*/,
+    );
     const payload: IJwtPayload = {
       id: user.id,
       role: user?.role,
