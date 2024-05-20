@@ -4,6 +4,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   HttpCode,
+  Param,
   Post,
   SerializeOptions,
   UseInterceptors,
@@ -15,6 +16,7 @@ import { JWT_TYPE } from '../shared/enum/jwt.enum';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -60,5 +62,13 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor)
   async register(@Body() registerDto: RegisterDto) {
     return await this.authService.register(registerDto);
+  }
+
+  @Post('/:id/reset-password')
+  @HttpCode(200)
+  @SerializeOptions({ groups: [SERIALIZE_GROUP.GROUP_USER] })
+  @UseInterceptors(ClassSerializerInterceptor)
+  async resetPassword(@Body() body: ResetPasswordDto, @Param('id') id: number) {
+    return await this.authService.resetPassword(id, body);
   }
 }

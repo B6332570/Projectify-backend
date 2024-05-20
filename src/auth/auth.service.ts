@@ -1,10 +1,16 @@
 import { UserService } from '@Api/user/user.service';
 import { UserEntity } from '@Database/entities/user.entity';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ENUMErrorMessages } from '@Shared/enum/error-message.enum';
-import { compareSync } from 'bcrypt';
+import { compareSync, compare } from 'bcrypt';
 import { DataSource } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -79,5 +85,23 @@ export class AuthService {
       imageId,
       username,
     });
+  }
+
+  async resetPassword(id: number, body: ResetPasswordDto) {
+    const user = await this.userService.findOne({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException('ไม่พบผู้ใช้งาน');
+    }
+    const isSame = await this.comaparaHash(body.oldPassword, user.password);
+    if (!isSame) {
+      throw new BadRequestException('รหัสผ่านเดิมไม่ถูกต้อง');
+    }
+    await this.userService.patch(id, { password: body.password });
+  }
+
+  async comaparaHash(oldPassword: string, hashPassword: string) {
+    return compare(oldPassword, hashPassword);
   }
 }
