@@ -7,6 +7,7 @@ import { join } from 'path';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -22,6 +23,19 @@ import { JwtStrategy } from './jwt.strategy';
     }),
     PassportModule,
     UserModule,
+    BullModule.registerQueue({
+      name: 'send_mail',
+      defaultJobOptions: {
+        removeOnComplete: {
+          age: 5 * 60 * 60 * 1000,
+          count: 100,
+        },
+        removeOnFail: {
+          age: 5 * 60 * 60 * 1000,
+          count: 100,
+        },
+      },
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

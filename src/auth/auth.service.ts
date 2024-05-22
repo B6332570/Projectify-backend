@@ -11,12 +11,17 @@ import { compareSync, compare } from 'bcrypt';
 import { DataSource } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { ResetForgotPasswordDto } from './dto/forgot-reset-password.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private dataSource: DataSource,
     private readonly userService: UserService,
+    @InjectQueue('send_mail') private readonly mailerQueue: Queue,
   ) {}
 
   // async validateUser(
@@ -103,5 +108,22 @@ export class AuthService {
 
   async comaparaHash(oldPassword: string, hashPassword: string) {
     return compare(oldPassword, hashPassword);
+  }
+
+  async forgotPassword(body: ForgotPasswordDto) {
+    const user = await this.userService.findOne({
+      where: { email: body.email },
+    });
+    if (!user) {
+      throw new NotFoundException('ไม่พบอีเมลในระบบ');
+    }
+    await this.mailerQueue.add('send_reset_password', {
+      email: body.email, // List of receivers email address
+      userId: user.id,
+    });
+  }
+
+  async resetForgotPassword(id: number, body: ResetForgotPasswordDto) {
+    await this.userService.patch(id, { password: body.password });
   }
 }

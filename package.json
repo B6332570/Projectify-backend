@@ -24,7 +24,10 @@
     "migration:generate": "npm run typeorm -- migration:generate ./migrations/$npm_config_name"
   },
   "dependencies": {
+    "@bull-board/express": "^5.13.0",
     "@hapi/joi": "^17.1.1",
+    "@nestjs-modules/mailer": "^2.0.2",
+    "@nestjs/bull": "^10.0.1",
     "@nestjs/common": "^9.1.4",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.1.4",

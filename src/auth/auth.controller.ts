@@ -17,6 +17,8 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetForgotPasswordDto } from './dto/forgot-reset-password.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -70,5 +72,24 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor)
   async resetPassword(@Body() body: ResetPasswordDto, @Param('id') id: number) {
     return await this.authService.resetPassword(id, body);
+  }
+
+  @Post('forget-password')
+  @HttpCode(200)
+  @SerializeOptions({ groups: [SERIALIZE_GROUP.GROUP_USER] })
+  @UseInterceptors(ClassSerializerInterceptor)
+  async forgetPassword(@Body() body: ForgotPasswordDto) {
+    return await this.authService.forgotPassword(body);
+  }
+
+  @Post('reset-forget-password/:id')
+  @HttpCode(200)
+  @SerializeOptions({ groups: [SERIALIZE_GROUP.GROUP_USER] })
+  @UseInterceptors(ClassSerializerInterceptor)
+  async resetForgotPassword(
+    @Body() body: ResetForgotPasswordDto,
+    @Param('id') id: number,
+  ) {
+    return await this.authService.resetForgotPassword(id, body);
   }
 }
