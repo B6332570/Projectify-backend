@@ -43,9 +43,10 @@ export class ProjectService extends CrudService<ProjectEntity> {
   }
 
   async createProject(body: CreateProjectDto, userInfo: IUserInfoDecorator) {
-    const { projectsName } = body;
+    const { projectsName, title } = body;
     const newProject = await this.repository.save({
       projectsName: projectsName,
+      title: title,
       userId: userInfo.id,
     });
     return newProject;

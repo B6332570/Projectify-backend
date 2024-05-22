@@ -24,6 +24,14 @@ export class ProjectEntity extends ExtendedEntity {
   })
   projectsName: string;
 
+  @Column({
+    type: ENUMTypeColumnEntity.TYPE_VARCHAR,
+    length: 255,
+    nullable: true,
+    name: 'title',
+  })
+  title: string;
+
   @ManyToOne(() => UserEntity, (user) => user.projects)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
