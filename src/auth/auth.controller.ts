@@ -82,14 +82,25 @@ export class AuthController {
     return await this.authService.forgotPassword(body);
   }
 
-  @Post('reset-forget-password/:id')
+  // @Post('reset-forget-password/:id')
+  // @HttpCode(200)
+  // @SerializeOptions({ groups: [SERIALIZE_GROUP.GROUP_USER] })
+  // @UseInterceptors(ClassSerializerInterceptor)
+  // async resetForgotPassword(
+  //   @Body() body: ResetForgotPasswordDto,
+  //   @Param('id') id: number,
+  // ) {
+  //   return await this.authService.resetForgotPassword(id, body);
+  // }
+
+  @Post('reset-forget-password/:token')
   @HttpCode(200)
   @SerializeOptions({ groups: [SERIALIZE_GROUP.GROUP_USER] })
   @UseInterceptors(ClassSerializerInterceptor)
   async resetForgotPassword(
     @Body() body: ResetForgotPasswordDto,
-    @Param('id') id: number,
+    @Param('token') token: string,
   ) {
-    return await this.authService.resetForgotPassword(id, body);
+    return await this.authService.resetForgotPassword(token, body);
   }
 }
