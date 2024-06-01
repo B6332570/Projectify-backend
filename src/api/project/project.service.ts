@@ -110,9 +110,8 @@ export class ProjectService extends CrudService<ProjectEntity> {
       'Project Name',
       'Project Title',
       'Task Group Name',
-      'Task Title',
-      'Assigned To',
       'Task Name',
+      'Assigned To',
       'Description',
       'OS',
       'Status',
@@ -128,9 +127,8 @@ export class ProjectService extends CrudService<ProjectEntity> {
             return { user: c3Item?.user?.username };
           });
           const format = {
-            title: c2Item?.title,
-            assignedTo: user,
             taskName: c2Item?.taskName,
+            assignedTo: user,
             description: c2Item?.description,
             os: c2Item?.os,
             status: c2Item?.status,
