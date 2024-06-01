@@ -110,8 +110,8 @@ export class ProjectService extends CrudService<ProjectEntity> {
       'Project Name',
       'Project Title',
       'Task Group Name',
-      'Task Name',
-      'Assigned To',
+      'Task Item Name',
+      'Owner',
       'Description',
       'OS',
       'Status',
@@ -130,7 +130,7 @@ export class ProjectService extends CrudService<ProjectEntity> {
           // รวมชื่อผู้ใช้ในอาร์เรย์เป็นสตริงหนึ่ง
           const assignedTo = userNames.join(', ');
           const format = {
-            taskName: c2Item?.taskName,
+            taskItem: c2Item?.taskName,
             assignedTo: assignedTo,
             description: c2Item?.description,
             os: c2Item?.os,
