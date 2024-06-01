@@ -123,12 +123,15 @@ export class ProjectService extends CrudService<ProjectEntity> {
     const data = result.map((item) => {
       const taskGroup = item?.taskGroups.map((cItem) => {
         const taskItem = cItem?.taskItems.map((c2Item) => {
-          const user = c2Item?.users.map((c3Item) => {
-            return { user: c3Item?.user?.username };
-          });
+          // สร้างอาร์เรย์ของชื่อผู้ใช้
+          const userNames = c2Item?.users.map(
+            (c3Item) => c3Item?.user?.username,
+          );
+          // รวมชื่อผู้ใช้ในอาร์เรย์เป็นสตริงหนึ่ง
+          const assignedTo = userNames.join(', ');
           const format = {
             taskName: c2Item?.taskName,
-            assignedTo: user,
+            assignedTo: assignedTo,
             description: c2Item?.description,
             os: c2Item?.os,
             status: c2Item?.status,
@@ -149,7 +152,6 @@ export class ProjectService extends CrudService<ProjectEntity> {
 
       return format;
     });
-    // console.log(data[0].taskGroup[0].taskItem[0].user);
     await this.excelService.exportExcel(res, headers, data);
   }
 }
