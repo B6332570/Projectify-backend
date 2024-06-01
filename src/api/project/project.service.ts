@@ -25,6 +25,36 @@ export class ProjectService extends CrudService<ProjectEntity> {
       .select('project')
       .leftJoinAndSelect('project.taskGroups', 'taskGroup')
       .leftJoinAndSelect('taskGroup.taskItems', 'taskItem')
+      .leftJoinAndSelect('taskItem.users', 'taskUser')
+      .leftJoinAndSelect('taskUser.user', 'user')
+      .getMany();
+  }
+
+  async responseExcel() {
+    return await this.repository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.taskGroups', 'taskGroup')
+      .leftJoinAndSelect('taskGroup.taskItems', 'taskItem')
+      .leftJoinAndSelect('taskItem.users', 'taskUser')
+      .leftJoinAndSelect('taskUser.user', 'user')
+      .select([
+        'project.id',
+        'project.projectsName',
+        'project.title',
+        'taskGroup.id',
+        'taskGroup.taskGroupName',
+        'taskItem.id',
+        'taskItem.title',
+        'taskItem.taskName',
+        'taskItem.description',
+        'taskItem.os',
+        'taskItem.status',
+        'taskItem.startDate',
+        'taskItem.endDate',
+        'taskItem.priority',
+        'taskUser.userId',
+        'user.username',
+      ])
       .getMany();
   }
 
@@ -77,39 +107,51 @@ export class ProjectService extends CrudService<ProjectEntity> {
 
   async exportProject(res: Response) {
     const headers = [
-      'project name',
-      'task group name',
-      'title',
-      'task name',
-      'description',
-      'os',
-      'status',
-      'start date',
-      'end date',
-      'priority',
+      'Project Name',
+      'Project Title',
+      'Task Group Name',
+      'Task Title',
+      'Assigned To',
+      'Task Name',
+      'Description',
+      'OS',
+      'Status',
+      'Start Date',
+      'End Date',
+      'Priority',
     ];
-    const result = await this.findAllProject();
+    const result = await this.responseExcel();
     const data = result.map((item) => {
-      const taskGroup = item.taskGroups.map((cItem) => {
-        const taskItem = cItem.taskItems.map((c2Item) => {
+      const taskGroup = item?.taskGroups.map((cItem) => {
+        const taskItem = cItem?.taskItems.map((c2Item) => {
+          const user = c2Item?.users.map((c3Item) => {
+            return { user: c3Item?.user?.username };
+          });
           const format = {
-            title: c2Item.title,
-            taskName: c2Item.taskName,
-            description: c2Item.description,
-            os: c2Item.os,
-            status: c2Item.status,
-            startDate: c2Item.startDate,
-            endDate: c2Item.endDate,
-            priority: c2Item.priority,
+            title: c2Item?.title,
+            assignedTo: user,
+            taskName: c2Item?.taskName,
+            description: c2Item?.description,
+            os: c2Item?.os,
+            status: c2Item?.status,
+            startDate: c2Item?.startDate,
+            endDate: c2Item?.endDate,
+            priority: c2Item?.priority,
           };
           return format;
         });
-        const format = { taskGroupName: cItem.taskGroupName, taskItem };
+        const format = { taskGroupName: cItem?.taskGroupName, taskItem };
         return format;
       });
-      const format = { projectsName: item.projectsName, taskGroup };
+      const format = {
+        projectsName: item?.projectsName,
+        title: item?.title,
+        taskGroup,
+      };
+
       return format;
     });
+    // console.log(data[0].taskGroup[0].taskItem[0].user);
     await this.excelService.exportExcel(res, headers, data);
   }
 }

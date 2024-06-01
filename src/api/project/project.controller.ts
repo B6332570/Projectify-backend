@@ -39,6 +39,11 @@ export class ProjectController {
     return await this.projectService.findAllProject();
   }
 
+  @Get('response/excel')
+  async findAllResponseExcel() {
+    return await this.projectService.responseExcel();
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.projectService.getProjectById(id);

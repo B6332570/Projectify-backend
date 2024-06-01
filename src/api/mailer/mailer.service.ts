@@ -30,7 +30,7 @@ export class MailerService {
     userId: number;
     token: string;
   }) {
-    const resetLink = `http://localhost:3000/reset-password/${body.token}`; // Assume you have a frontend route to handle this
+    const resetLink = `http://localhost:3000/forgot-password/${body.token}`; // Assume you have a frontend route to handle this
     // try {
     await this.mailerService.sendMail({
       to: body.email, // List of receivers email address
