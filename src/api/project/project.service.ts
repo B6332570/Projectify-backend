@@ -54,8 +54,46 @@ export class ProjectService extends CrudService<ProjectEntity> {
         'taskItem.priority',
         'taskUser.userId',
         'user.username',
+        'user.firstName',
+        'user.lastName',
       ])
       .getMany();
+  }
+
+  async responseExcelById(id: number) {
+    const responseExcel = await this.repository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.taskGroups', 'taskGroup')
+      .leftJoinAndSelect('taskGroup.taskItems', 'taskItem')
+      .leftJoinAndSelect('taskItem.users', 'taskUser')
+      .leftJoinAndSelect('taskUser.user', 'user')
+      .select([
+        'project.id',
+        'project.projectsName',
+        'project.title',
+        'taskGroup.id',
+        'taskGroup.taskGroupName',
+        'taskItem.id',
+        'taskItem.title',
+        'taskItem.taskName',
+        'taskItem.description',
+        'taskItem.os',
+        'taskItem.status',
+        'taskItem.startDate',
+        'taskItem.endDate',
+        'taskItem.priority',
+        'taskUser.userId',
+        'user.username',
+        'user.firstName',
+        'user.lastName',
+      ])
+      .where('project.id = :id', { id })
+      .getMany();
+
+    if (!responseExcel) {
+      throw new NotFoundException(`responseExcel with ID ${id} not found.`);
+    }
+    return responseExcel;
   }
 
   async getProjectById(id: number) {
@@ -123,15 +161,61 @@ export class ProjectService extends CrudService<ProjectEntity> {
     const data = result.map((item) => {
       const taskGroup = item?.taskGroups.map((cItem) => {
         const taskItem = cItem?.taskItems.map((c2Item) => {
-          // สร้างอาร์เรย์ของชื่อผู้ใช้
-          const userNames = c2Item?.users.map(
-            (c3Item) => c3Item?.user?.username,
+          const fullNames = c2Item?.users.map(
+            (c3Item) => `${c3Item?.user?.firstName} ${c3Item?.user?.lastName}`,
           );
-          // รวมชื่อผู้ใช้ในอาร์เรย์เป็นสตริงหนึ่ง
-          const assignedTo = userNames.join(', ');
+          const assignedTo = fullNames.join(', ');
           const format = {
-            taskItem: c2Item?.taskName,
-            assignedTo: assignedTo,
+            taskItemName: c2Item?.taskName,
+            owner: assignedTo,
+            description: c2Item?.description,
+            os: c2Item?.os,
+            status: c2Item?.status,
+            startDate: c2Item?.startDate,
+            endDate: c2Item?.endDate,
+            priority: c2Item?.priority,
+          };
+          return format;
+        });
+        const format = { taskGroupName: cItem?.taskGroupName, taskItem };
+        return format;
+      });
+      const format = {
+        projectsName: item?.projectsName,
+        title: item?.title,
+        taskGroup,
+      };
+
+      return format;
+    });
+    await this.excelService.exportExcel(res, headers, data);
+  }
+
+  async exportProjectById(res: Response, id: number) {
+    const headers = [
+      'Project Name',
+      'Project Title',
+      'Task Group Name',
+      'Task Item Name',
+      'Owner',
+      'Description',
+      'OS',
+      'Status',
+      'Start Date',
+      'End Date',
+      'Priority',
+    ];
+    const result = await this.responseExcelById(id);
+    const data = result.map((item) => {
+      const taskGroup = item?.taskGroups.map((cItem) => {
+        const taskItem = cItem?.taskItems.map((c2Item) => {
+          const fullNames = c2Item?.users.map(
+            (c3Item) => `${c3Item?.user?.firstName} ${c3Item?.user?.lastName}`,
+          );
+          const assignedTo = fullNames.join(', ');
+          const format = {
+            taskItemName: c2Item?.taskName,
+            owner: assignedTo,
             description: c2Item?.description,
             os: c2Item?.os,
             status: c2Item?.status,

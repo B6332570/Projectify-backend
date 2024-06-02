@@ -34,6 +34,14 @@ export class ProjectController {
     return await this.projectService.exportProject(res);
   }
 
+  @Get('export/:id')
+  async exportById(
+    @Res() res: Response,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return await this.projectService.exportProjectById(res, id);
+  }
+
   @Get()
   async findAll() {
     return await this.projectService.findAllProject();
@@ -42,6 +50,11 @@ export class ProjectController {
   @Get('response/excel')
   async findAllResponseExcel() {
     return await this.projectService.responseExcel();
+  }
+
+  @Get('response/excel/:id')
+  async responseExportById(@Param('id', ParseIntPipe) id: number) {
+    return await this.projectService.responseExcelById(id);
   }
 
   @Get(':id')
