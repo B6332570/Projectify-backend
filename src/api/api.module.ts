@@ -6,6 +6,7 @@ import { TaskGroupModule } from './task-group/task-group.module';
 import { TaskItemModule } from './task-item/task-item.module';
 import { ExcelModule } from './excel/excel.module';
 import { MailerModule } from './mailer/mailer.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MailerModule } from './mailer/mailer.module';
     TaskItemModule,
     ExcelModule,
     MailerModule,
+    RoleModule,
   ],
 })
 export class ApiModule {}

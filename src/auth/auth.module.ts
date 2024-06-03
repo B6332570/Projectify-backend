@@ -8,9 +8,13 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { BullModule } from '@nestjs/bull';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from '@Database/entities/user.entity';
+import { UserRoleEntity } from '@Database/entities/user-role.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([UserEntity, UserRoleEntity]),
     JwtModule.register({
       privateKey: readFileSync(join(process.cwd(), 'rsa.private'), 'utf8'),
       signOptions: {

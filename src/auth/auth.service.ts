@@ -18,6 +18,8 @@ import { ResetForgotPasswordDto } from './dto/forgot-reset-password.dto';
 import { JwtService } from '@nestjs/jwt';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserRoleEntity } from '@Database/entities/user-role.entity';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +27,10 @@ export class AuthService {
   constructor(
     private dataSource: DataSource,
     private readonly userService: UserService,
+    @InjectRepository(UserRoleEntity)
+    private userRoleRepository: Repository<UserRoleEntity>,
     private jwtService: JwtService, // Inject JwtService
+
     @InjectQueue('send_mail') private readonly mailerQueue: Queue,
   ) {
     this.userRepository = this.dataSource.getRepository(UserEntity);
@@ -85,18 +90,47 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    const { email, password, role, firstName, lastName, username, imageId } =
+    const { email, password, roles, firstName, lastName, username, imageId } =
       registerDto;
     await this.userService.validateEmail(email);
-    return await this.userService.create({
+    const newUser = await this.userService.create({
       email,
       password,
-      role,
       firstName,
       lastName,
       imageId,
       username,
     });
+
+    const savedUser = await this.userRepository.save(newUser);
+
+    if (roles.length > 0) {
+      for (const roleId of roles) {
+        const newUserRole = this.userRoleRepository.create({
+          userId: savedUser.id,
+          roleId,
+        });
+        await this.userRoleRepository.save(newUserRole);
+      }
+    }
+
+    const userWithRoles = await this.userRepository.findOne({
+      where: { id: savedUser.id },
+      relations: ['userRoles', 'userRoles.role'],
+    });
+
+    // Format response to include roles
+    const result = {
+      username: userWithRoles.username,
+      firstName: userWithRoles.firstName,
+      lastName: userWithRoles.lastName,
+      email: userWithRoles.email,
+      imageId: userWithRoles.imageId,
+      id: userWithRoles.id,
+      roles: userWithRoles.userRoles.map((ur) => ur.role.role),
+    };
+
+    return { code: 200, status: 'success', result: [result] };
   }
 
   async resetPassword(id: number, body: ResetPasswordDto) {

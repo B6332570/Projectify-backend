@@ -11,11 +11,8 @@ export class RegisterDto {
   @IsString()
   password: string;
 
-  @ApiProperty({
-    enum: ENUM_ROLE,
-    required: true,
-  })
-  role: ENUM_ROLE;
+  @ApiProperty({ example: [1, 2, 3] })
+  roles: number[];
 
   @ApiProperty()
   firstName: string;

@@ -20,6 +20,7 @@ import * as bcrypt from 'bcrypt';
 import { MediaObjectEntity } from './media-object.entity';
 import { TaskItemEntity } from './task-item.entity';
 import { TaskUserEntity } from './task-user.entity';
+import { UserRoleEntity } from './user-role.entity';
 
 @Entity(DB_TABLE_NAME.USER)
 export class UserEntity extends ExtendedEntity {
@@ -67,13 +68,13 @@ export class UserEntity extends ExtendedEntity {
   })
   password: string;
 
-  @Column({
-    type: ENUMTypeColumnEntity.TYPE_VARCHAR,
-    length: 255,
-    nullable: false,
-    name: 'role',
-  })
-  role: ENUM_ROLE;
+  // @Column({
+  //   type: ENUMTypeColumnEntity.TYPE_VARCHAR,
+  //   length: 255,
+  //   nullable: false,
+  //   name: 'role',
+  // })
+  // role: ENUM_ROLE;
 
   // One-to-Many relationship with ProjectEntity
   @OneToMany(() => ProjectEntity, (project) => project.user)
@@ -88,6 +89,9 @@ export class UserEntity extends ExtendedEntity {
 
   @OneToMany(() => TaskUserEntity, (task) => task.user)
   taskUsers: TaskUserEntity[];
+
+  @OneToMany(() => UserRoleEntity, (userRole) => userRole.user)
+  userRoles: UserRoleEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()

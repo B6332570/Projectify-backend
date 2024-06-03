@@ -19,6 +19,9 @@ import { SignInDto } from './dto/sign-in.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetForgotPasswordDto } from './dto/forgot-reset-password.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserRoleEntity } from '@Database/entities/user-role.entity';
+import { Repository } from 'typeorm';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -27,19 +30,30 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
+    @InjectRepository(UserRoleEntity)
+    private userRoleRepository: Repository<UserRoleEntity>,
   ) {}
 
   @Post('login')
   @HttpCode(200)
   async login(@Body() signInDto: SignInDto) {
     const { username, password /*, role*/ } = signInDto;
+
     const user = await this.authService.validateUser(
       username,
       password /*role,*/,
     );
+
+    const userRoles = await this.userRoleRepository.find({
+      where: { userId: user.id },
+      relations: ['role'],
+    });
+
+    const roles = userRoles.map((ur) => ur.role.role);
+
     const payload: IJwtPayload = {
       id: user.id,
-      role: user?.role,
+      roles: roles,
     };
     const acToken = this.jwtService.sign({
       ...payload,
@@ -51,8 +65,8 @@ export class AuthController {
       firstName: user?.firstName,
       lastName: user?.lastName,
       userName: user?.username,
-      role: user?.role,
       email: user?.email,
+      roles: roles,
       accessToken: acToken,
     };
     return _resp;
