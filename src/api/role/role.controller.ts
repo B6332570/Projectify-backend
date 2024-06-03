@@ -16,11 +16,13 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('role')
 @ApiTags('role')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+// @ApiBearerAuth()
+// @UseGuards(JwtAuthGuard)
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.createRole(createRoleDto);
