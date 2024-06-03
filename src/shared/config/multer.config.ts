@@ -4,7 +4,7 @@ import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 
 export const multerConfig = (
-  limit: number = 2 * 1024 * 1024,
+  limit: number = 10 * 1024 * 1024,
   dest = 'admin',
 ): MulterOptions => {
   return {

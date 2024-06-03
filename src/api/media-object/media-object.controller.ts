@@ -29,7 +29,7 @@ export class MediaObjectController {
   @Post('')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
-    FileInterceptor('file', multerConfig(2 * 1024 * 1024, 'media')),
+    FileInterceptor('file', multerConfig(10 * 1024 * 1024, 'media')),
     ClassSerializerInterceptor,
   )
   @ApiBody({ type: CreateMediaObjectDto })
